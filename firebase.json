@@ -1,0 +1,17 @@
+{
+    "hosting": {
+        "public": "build",
+        "site": "great-lake-1b8f7",
+        "ignore": [
+            "firebase.json",
+            "**/.*",
+            "**/node_modules/**"
+        ],
+        "rewrites": [
+            {
+                "source": "**",
+                "destination": "/index.html"
+            }
+        ]
+    }
+}
