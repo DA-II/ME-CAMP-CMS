@@ -106,7 +106,12 @@ export const articlesCollection = buildCollection<Article>({
         },
         publishDate: {
             name: "发布日期",
-            dataType: "date"
+            dataType: "date",
+            validation: { 
+                required: true,  // 添加必选验证
+                requiredMessage: "请选择发布日期"  // 自定义错误提示
+            },
+            description: "文章的发布日期"  // 添加字段说明
         },
         status: {
             name: "状态",
