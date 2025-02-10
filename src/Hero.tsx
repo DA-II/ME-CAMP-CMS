@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { collection, getDocs, query, where, orderBy } from 'firebase/firestore';
-import { db } from '../firebase';
+import { db } from './firebase';
 
 interface BannerImage {
     title: string;
@@ -62,7 +62,12 @@ const Hero: React.FC = () => {
         fetchBanners();
     }, []);
 
-    // ... 其余代码保持不变 ...
+    // 需要返回 JSX
+    return (
+        <div>
+            {/* 你的轮播图组件内容 */}
+        </div>
+    );
 };
 
 export default Hero; 

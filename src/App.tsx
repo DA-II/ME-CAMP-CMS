@@ -134,8 +134,6 @@ function App() {
                     userConfigPersistence={userConfigPersistence}
                     dataSourceDelegate={firestoreDelegate}
                     storageSource={storageSource}
-                    logo={<MELogo />}
-                    favicon={generateFavicon()}
                 >
                     {({
                           context,
@@ -157,7 +155,7 @@ function App() {
                             autoOpenDrawer={false}>
                             <AppBar 
                                 title={"My demo app"}
-                                logo={<MELogo />}
+                                logo={generateFavicon()}
                             />
                             <Drawer/>
                             <NavigationRoutes/>
