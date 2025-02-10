@@ -96,9 +96,12 @@ export const articlesCollection = buildCollection<Article>({
             validation: { required: true },
             dataType: "string",
             enumValues: {
+                saturday: "Saturday Program",
+                afterSchool: "After-school Program",
+                summerCamp: "Summer Camp Program",
+                satAct: "Online SAT/ACT Training",
                 news: "新闻动态",
-                notice: "通知公告",
-                study: "学习资料"
+                notice: "通知公告"
             }
         },
         publishDate: {

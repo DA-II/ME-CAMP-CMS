@@ -1,4 +1,5 @@
 import React, { useCallback, useMemo } from "react";
+import { MELogo, generateFavicon } from "./components/MELogo";
 
 import {
     AppBar,
@@ -133,6 +134,8 @@ function App() {
                     userConfigPersistence={userConfigPersistence}
                     dataSourceDelegate={firestoreDelegate}
                     storageSource={storageSource}
+                    logo={<MELogo />}
+                    favicon={generateFavicon()}
                 >
                     {({
                           context,
@@ -152,7 +155,10 @@ function App() {
 
                         return <Scaffold
                             autoOpenDrawer={false}>
-                            <AppBar title={"My demo app"}/>
+                            <AppBar 
+                                title={"My demo app"}
+                                logo={<MELogo />}
+                            />
                             <Drawer/>
                             <NavigationRoutes/>
                             <SideDialogs/>
