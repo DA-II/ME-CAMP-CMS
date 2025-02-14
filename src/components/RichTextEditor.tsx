@@ -50,24 +50,20 @@ export const RichTextEditor: React.FC<RichTextEditorProps> = ({ value, setValue 
             (error) => {
                 console.error('Error uploading image:', error);
                 alert('图片上传失败，请重试');
-                // 获取占位符的长度并删除
-                const placeholderLength = editor.getLength() - placeholderIndex;
-                editor.deleteText(placeholderIndex, placeholderLength);
+                // 移除占位符
+                editor.deleteText(placeholderIndex, 1);
             },
             async () => {
                 try {
                     const url = await getDownloadURL(storageRef);
-                    // 获取占位符的长度
-                    const placeholderLength = editor.getLength() - placeholderIndex;
-                    // 删除整个占位符
-                    editor.deleteText(placeholderIndex, placeholderLength);
+                    // 移除占位符
+                    editor.deleteText(placeholderIndex, 1);
                     // 插入实际图片
                     editor.insertEmbed(placeholderIndex, 'image', url);
                 } catch (error) {
                     console.error('Error getting download URL:', error);
                     alert('图片处理失败，请重试');
-                    const placeholderLength = editor.getLength() - placeholderIndex;
-                    editor.deleteText(placeholderIndex, placeholderLength);
+                    editor.deleteText(placeholderIndex, 1);
                 }
             }
         );
