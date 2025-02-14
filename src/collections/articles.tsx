@@ -1,7 +1,5 @@
 import { buildCollection } from "@firecms/core";
-import ReactQuill from 'react-quill';
-import 'react-quill/dist/quill.snow.css';  // 引入样式
-import { useMemo } from 'react';  // 添加 useMemo
+import { RichTextEditor } from '../components/RichTextEditor';
 
 type Article = {
     title: string;
@@ -45,51 +43,12 @@ export const articlesCollection = buildCollection<Article>({
             name: "内容",
             validation: { required: true },
             dataType: "string",
-            Field: ({ value, setValue }) => {
-                // 使用 useMemo 缓存 modules 配置
-                const modules = useMemo(() => ({
-                    toolbar: [
-                        [{ 'header': [1, 2, 3, false] }],
-                        ['bold', 'italic', 'underline'],
-                        [{ 'list': 'ordered'}, { 'list': 'bullet' }],
-                        ['link', 'image'],
-                        ['clean']
-                    ],
-                    clipboard: {
-                        matchVisual: false // 禁用粘贴格式匹配
-                    }
-                }), []);
-
-                // 使用 useMemo 缓存 formats 配置
-                const formats = useMemo(() => [
-                    'header',
-                    'bold', 'italic', 'underline',
-                    'list', 'bullet',
-                    'link', 'image'
-                ], []);
-
-                // 处理 onChange 事件
-                const handleChange = (content: string) => {
-                    setValue(content);
-                };
-
-                return (
-                    <div style={{ height: '450px' }}>
-                        <ReactQuill 
-                            theme="snow"
-                            value={value as string}
-                            onChange={handleChange}
-                            modules={modules}
-                            formats={formats}
-                            style={{ 
-                                height: '400px',
-                                marginBottom: '50px'
-                            }}
-                            preserveWhitespace={true}
-                        />
-                    </div>
-                );
-            }
+            Field: ({ value, setValue }) => (
+                <RichTextEditor 
+                    value={value as string} 
+                    setValue={setValue}
+                />
+            )
         },
         category: {
             name: "分类",

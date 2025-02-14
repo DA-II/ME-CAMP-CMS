@@ -8,7 +8,15 @@ export default defineConfig({
     build: {
         outDir: "./build",
         target: "ESNEXT",
-        sourcemap: true
+        sourcemap: true,
+        rollupOptions: {
+            onwarn(warning, warn) {
+                if (warning.code === 'MODULE_LEVEL_DIRECTIVE') {
+                    return
+                }
+                warn(warning)
+            }
+        }
     },
     optimizeDeps: { include: ["react/jsx-runtime"] },
     plugins: [
