@@ -116,6 +116,11 @@ export const articlesCollection = buildCollection<Article>({
         status: {
             name: "状态",
             dataType: "string",
+            validation: {
+                required: true,  // 添加必选验证
+                requiredMessage: "请选择文章状态"  // 自定义错误提示
+            },
+            description: "文章的发布状态",  // 添加字段说明
             enumValues: {
                 draft: "草稿",
                 published: "已发布",
