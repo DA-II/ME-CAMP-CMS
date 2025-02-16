@@ -1,4 +1,4 @@
-import React, { useMemo, useRef, useCallback } from 'react';
+import React, { useMemo, useRef, useCallback, useState } from 'react';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import { getStorage, ref, uploadBytes, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
@@ -12,6 +12,8 @@ interface RichTextEditorProps {
 export const RichTextEditor: React.FC<RichTextEditorProps> = ({ value, setValue }) => {
     const quillRef = useRef<ReactQuill>(null);
     const storage = getStorage();
+    const [isUploading, setIsUploading] = useState(false);
+    const [uploadProgress, setUploadProgress] = useState(0);
 
     // 插入临时占位图
     const insertPlaceholder = (editor: any, range: any) => {
@@ -21,8 +23,7 @@ export const RichTextEditor: React.FC<RichTextEditorProps> = ({ value, setValue 
                     <path d="M12 4V2M12 22v-2M6.34 6.34L4.93 4.93M19.07 19.07l-1.41-1.41M4 12H2M22 12h-2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41" 
                         stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
                 </svg>
-                <div style="margin-top: 8px;">正在上传图片...</div>
-                <div class="upload-progress" style="margin-top: 8px;">0%</div>
+                
             </div>
         `;
         editor.clipboard.dangerouslyPasteHTML(range.index, placeholder);
@@ -31,17 +32,19 @@ export const RichTextEditor: React.FC<RichTextEditorProps> = ({ value, setValue 
 
     // 处理图片上传
     const handleImageUpload = async (file: File, editor: any, range: any) => {
+        setIsUploading(true);
+        setUploadProgress(0);
+        
         const placeholderIndex = insertPlaceholder(editor, range);
         const fileName = `articles/images/${uuidv4()}_${file.name}`;
         const storageRef = ref(storage, fileName);
 
-        // 创建上传任务
         const uploadTask = uploadBytesResumable(storageRef, file);
 
-        // 监听上传进度
         uploadTask.on('state_changed', 
             (snapshot) => {
                 const progress = Math.round((snapshot.bytesTransferred / snapshot.totalBytes) * 100);
+                setUploadProgress(progress);
                 const progressElement = editor.container.querySelector('.upload-progress');
                 if (progressElement) {
                     progressElement.textContent = `${progress}%`;
@@ -50,52 +53,25 @@ export const RichTextEditor: React.FC<RichTextEditorProps> = ({ value, setValue 
             (error) => {
                 console.error('Error uploading image:', error);
                 alert('图片上传失败，请重试');
-                // 移除占位符
                 editor.deleteText(placeholderIndex, 1);
+                setIsUploading(false);
             },
             async () => {
                 try {
                     const url = await getDownloadURL(storageRef);
-                    // 移除占位符
                     editor.deleteText(placeholderIndex, 1);
-                    // 插入实际图片
                     editor.insertEmbed(placeholderIndex, 'image', url);
                 } catch (error) {
                     console.error('Error getting download URL:', error);
                     alert('图片处理失败，请重试');
                     editor.deleteText(placeholderIndex, 1);
+                } finally {
+                    setIsUploading(false);
+                    setUploadProgress(0);
                 }
             }
         );
     };
-
-    // 处理粘贴事件
-    const handlePaste = useCallback(async (e: ClipboardEvent) => {
-        const clipboardData = e.clipboardData;
-        if (!clipboardData) return;
-
-        const hasImage = Array.from(clipboardData.items).some(
-            item => item.type.indexOf('image') !== -1
-        );
-
-        if (hasImage) {
-            e.preventDefault();
-            
-            for (let i = 0; i < clipboardData.items.length; i++) {
-                const item = clipboardData.items[i];
-                if (item.type.indexOf('image') !== -1) {
-                    const file = item.getAsFile();
-                    if (file) {
-                        const editor = quillRef.current?.getEditor();
-                        const range = editor?.getSelection(true);
-                        if (editor && range) {
-                            await handleImageUpload(file, editor, range);
-                        }
-                    }
-                }
-            }
-        }
-    }, [storage]);
 
     // 图片上传处理器
     const imageHandler = useCallback(() => {
@@ -130,7 +106,10 @@ export const RichTextEditor: React.FC<RichTextEditorProps> = ({ value, setValue 
             }
         },
         clipboard: {
-            matchVisual: false
+            matchVisual: false,
+            matchers: [
+                ['img', () => ({ insert: '' })],
+            ]
         },
         keyboard: {
             bindings: {}
@@ -156,9 +135,48 @@ export const RichTextEditor: React.FC<RichTextEditorProps> = ({ value, setValue 
                         from { transform: rotate(0deg); }
                         to { transform: rotate(360deg); }
                     }
+                    .uploading-overlay {
+                        position: absolute;
+                        top: 0;
+                        right: 0;
+                        padding: 8px 16px;
+                        background: rgba(79, 70, 229, 0.9);
+                        color: white;
+                        border-radius: 0 0 0 8px;
+                        z-index: 1000;
+                        display: flex;
+                        align-items: center;
+                        gap: 8px;
+                    }
+                    .progress-text {
+                        font-size: 14px;
+                        font-weight: 500;
+                    }
+                    .editor-container {
+                        position: relative;
+                    }
+                    .ql-editor.disabled {
+                        background: rgba(0, 0, 0, 0.03);
+                        cursor: not-allowed;
+                    }
                 `}
             </style>
-            <div style={{ height: '450px' }}>
+            <div className="editor-container" style={{ height: '450px' }}>
+                {isUploading && (
+                    <div className="uploading-overlay">
+                        <svg className="animate-spin" width="20" height="20" viewBox="0 0 24 24">
+                            <path 
+                                d="M12 4V2M12 22v-2M6.34 6.34L4.93 4.93M19.07 19.07l-1.41-1.41M4 12H2M22 12h-2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41" 
+                                stroke="currentColor" 
+                                strokeWidth="2" 
+                                strokeLinecap="round"
+                            />
+                        </svg>
+                        <span className="progress-text">
+                            正在上传图片 {uploadProgress}%
+                        </span>
+                    </div>
+                )}
                 <ReactQuill 
                     ref={quillRef}
                     theme="snow"
@@ -171,7 +189,8 @@ export const RichTextEditor: React.FC<RichTextEditorProps> = ({ value, setValue 
                         marginBottom: '50px'
                     }}
                     preserveWhitespace
-                    onPaste={handlePaste}
+                    readOnly={isUploading}
+                    className={isUploading ? 'disabled' : ''}
                 />
             </div>
         </>
