@@ -57,32 +57,19 @@ const Editor: React.FC<EditorProps> = ({
 }) => {
     const storage = getStorage();
     const [loading, setLoading] = useState(false);
-    const [uploadProgress, setUploadProgress] = useState(0);
     const modeController = useModeController();
     const isDark = modeController.mode === "dark";
 
     const handleImageUpload = async (file: File): Promise<string> => {
         setLoading(true);
-        setUploadProgress(0);
         try {
             const fileName = `articles/images/${uuidv4()}_${file.name}`;
             const storageRef = ref(storage, fileName);
-            
-            const uploadTask = uploadBytesResumable(storageRef, file);
-            
-            uploadTask.on('state_changed', 
-                (snapshot) => {
-                    const progress = Math.round((snapshot.bytesTransferred / snapshot.totalBytes) * 100);
-                    setUploadProgress(progress);
-                }
-            );
-
-            await uploadTask;
+            await uploadBytesResumable(storageRef, file);
             const url = await getDownloadURL(storageRef);
             return url;
         } finally {
             setLoading(false);
-            setUploadProgress(0);
         }
     };
 
@@ -151,32 +138,6 @@ const Editor: React.FC<EditorProps> = ({
                         border-radius: 0.55rem;
                         overflow: hidden;
                     }
-                    .upload-overlay {
-                        position: absolute;
-                        top: 0;
-                        right: 0;
-                        padding: 8px 16px;
-                        background: rgba(79, 70, 229, 0.9);
-                        color: white;
-                        border-radius: 0 0 0 8px;
-                        z-index: 1000;
-                        display: flex;
-                        align-items: center;
-                        gap: 8px;
-                        font-size: 14px;
-                    }
-                    .loading-spinner {
-                        width: 16px;
-                        height: 16px;
-                        border: 2px solid white;
-                        border-top-color: transparent;
-                        border-radius: 50%;
-                        animation: spin 1s linear infinite;
-                    }
-                    @keyframes spin {
-                        from { transform: rotate(0deg); }
-                        to { transform: rotate(360deg); }
-                    }
                     .editor-container.loading::after {
                         content: '';
                         position: absolute;
@@ -184,6 +145,10 @@ const Editor: React.FC<EditorProps> = ({
                         left: 0;
                         right: 0;
                         bottom: 0;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        z-index: 1000;
                         background: ${isDark ? 'rgba(0, 0, 0, 0.5)' : 'rgba(255, 255, 255, 0.7)'};
                     }
                     .richtext-bg-background {
@@ -198,12 +163,6 @@ const Editor: React.FC<EditorProps> = ({
                     }
                 `}
             </style>
-            {loading && (
-                <div className="upload-overlay">
-                    <div className="loading-spinner" />
-                    <span>正在上传图片 {uploadProgress}%</span>
-                </div>
-            )}
             <RichTextEditor
                 output='html'
                 content={value}
