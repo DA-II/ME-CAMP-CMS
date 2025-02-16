@@ -1,5 +1,5 @@
 import { buildCollection } from "@firecms/core";
-import { RichTextEditor } from '../components/RichTextEditor';
+import Editor from '../components/RichTextEditor1';
 
 type Article = {
     title: string;
@@ -44,7 +44,7 @@ export const articlesCollection = buildCollection<Article>({
             validation: { required: true },
             dataType: "string",
             Field: ({ value, setValue }) => (
-                <RichTextEditor 
+                <Editor 
                     value={value as string} 
                     setValue={setValue}
                 />
