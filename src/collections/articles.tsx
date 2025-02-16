@@ -1,5 +1,5 @@
 import { buildCollection } from "@firecms/core";
-import Editor from '../components/RichTextEditor1';
+import Editor from '../components/RichTextEditor';
 
 type Article = {
     title: string;
