@@ -10,6 +10,7 @@ type Article = {
     publishDate: Date;
     status: string;
     showOnHome: boolean;  // 新增首页展示控制字段
+    registrationLink: string;  // 新增报名链接字段
 }
 
 export const articlesCollection = buildCollection<Article>({
@@ -30,6 +31,10 @@ export const articlesCollection = buildCollection<Article>({
         cover: {
             name: "封面图片",
             dataType: "string",
+            validation: {
+                required: true,
+                requiredMessage: "请上传封面图片"
+            },
             storage: {
                 storagePath: "articles/covers",
                 acceptedFiles: ["image/*"],
@@ -92,6 +97,16 @@ export const articlesCollection = buildCollection<Article>({
             dataType: "boolean",
             defaultValue: false,  // 默认不在首页显示
             columnWidth: 120
+        },
+        registrationLink: {
+            name: "报名链接",
+            description: "课程或活动的报名链接（选填）",
+            dataType: "string",
+            validation: {
+                required: false,
+                matches: /^(https?:\/\/)?([\da-z.-]+)\.([a-z.]{2,6})([/\w .-]*)*\/?$/,
+                matchesMessage: "请输入有效的URL地址"
+            }
         }
     }
 }); 
