@@ -1,6 +1,13 @@
 import { buildCollection } from "@firecms/core";
 import Editor from '../components/RichTextEditor';
 
+type Location = {
+    name: string;
+    address: string;
+    lat: number;
+    lng: number;
+}
+
 type Article = {
     title: string;
     titleEn: string;  // 新增英文标题
@@ -11,6 +18,7 @@ type Article = {
     status: string;
     showOnHome: boolean;  // 新增首页展示控制字段
     registrationLink: string;  // 新增报名链接字段
+    locations: Location[];  // 新增 locations 字段类型
 }
 
 export const articlesCollection = buildCollection<Article>({
@@ -106,6 +114,44 @@ export const articlesCollection = buildCollection<Article>({
                 required: false,
                 matches: /^(https?:\/\/)?([\da-z.-]+)\.([a-z.]{2,6})([/\w .-]*)*\/?$/,
                 matchesMessage: "请输入有效的URL地址"
+            }
+        },
+        locations: {
+            name: "地点",
+            description: "课程或活动的举办地点",
+            dataType: "array",
+            of: {
+                dataType: "map",
+                properties: {
+                    name: {
+                        name: "位置名称",
+                        dataType: "string",
+                        validation: { required: true }
+                    },
+                    address: {
+                        name: "详细地址",
+                        dataType: "string",
+                        validation: { required: true }
+                    },
+                    lat: {
+                        name: "纬度",
+                        dataType: "number",
+                        validation: {
+                            required: true,
+                            min: -90,
+                            max: 90
+                        }
+                    },
+                    lng: {
+                        name: "经度",
+                        dataType: "number",
+                        validation: {
+                            required: true,
+                            min: -180,
+                            max: 180
+                        }
+                    }
+                }
             }
         }
     }

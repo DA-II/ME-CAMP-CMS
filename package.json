@@ -15,9 +15,10 @@
     "react-quill": "^2.0.0",
     "react-router": "^6.26.2",
     "react-router-dom": "^6.26.2",
-    "reactjs-tiptap-editor": "^0.1.14",
+    "reactjs-tiptap-editor": "0.1.15",
     "rehype-sanitize": "^6.0.0",
-    "uuid": "^11.0.5"
+    "uuid": "^11.0.5",
+    "prosemirror-view": "1.37.2"
   },
   "scripts": {
     "dev": "vite --mode development",

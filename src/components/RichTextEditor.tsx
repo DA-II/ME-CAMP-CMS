@@ -1,6 +1,8 @@
 import React, { useCallback, useState } from 'react';
 import { useModeController } from "@firecms/core";
-import RichTextEditor, {
+import RichTextEditor from 'reactjs-tiptap-editor';
+
+import {
     BaseKit,
     Blockquote,
     Bold,
@@ -37,8 +39,7 @@ import RichTextEditor, {
     TaskList,
     TextAlign,
     Underline,
-    locale
-} from 'reactjs-tiptap-editor';
+} from 'reactjs-tiptap-editor/extension-bundle';
 import 'reactjs-tiptap-editor/style.css';
 import 'katex/dist/katex.min.css';
 import { getStorage, ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
@@ -50,9 +51,9 @@ interface EditorProps {
     editable?: boolean;
 }
 
-const Editor: React.FC<EditorProps> = ({ 
-    value, 
-    setValue, 
+const Editor: React.FC<EditorProps> = ({
+    value,
+    setValue,
     editable = true
 }) => {
     const storage = getStorage();
@@ -102,7 +103,7 @@ const Editor: React.FC<EditorProps> = ({
         Highlight,
         BulletList,
         OrderedList,
-        TextAlign.configure({ 
+        TextAlign.configure({
             types: ['heading', 'paragraph']
         }),
         LineHeight,
@@ -121,7 +122,7 @@ const Editor: React.FC<EditorProps> = ({
         Code.configure({
             toolbar: false,
         }),
-        CodeBlock.configure({ 
+        CodeBlock.configure({
             defaultTheme: isDark ? 'dracula' : 'github-light'
         }),
         ColumnActionButton,
