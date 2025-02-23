@@ -64,6 +64,11 @@ export const galleryCollection = buildCollection<GalleryItem>({
                 },
                 storeUrl: true
             },
+            preview: {
+                mediaType: "video",
+                previewType: "thumbnail",
+                autoPlay: false
+            },
             description: "支持上传 MP4、WebM 等格式的视频文件"
         },
         order: {
