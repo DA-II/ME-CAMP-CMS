@@ -36,6 +36,7 @@ import { articlesCollection } from "./collections/articles";
 import { attendanceCollection } from "./collections/attendance";
 import { coursesCollection } from "./collections/courses";
 import { bannerCollection } from "./collections/banner";
+import { galleryCollection } from "./collections/gallery";
 
 import { firebaseConfig } from "./firebase_config";
 
@@ -63,7 +64,8 @@ function App() {
 
     const collections = useMemo(() => [
         articlesCollection,
-        bannerCollection
+        bannerCollection,
+        galleryCollection
     ], []);
 
     const {
