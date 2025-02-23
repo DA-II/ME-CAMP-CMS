@@ -51,14 +51,20 @@ export const galleryCollection = buildCollection<GalleryItem>({
             }
         },
         videoUrl: {
-            name: "视频链接",
+            name: "视频",
             dataType: "string",
             validation: {
                 required: false,
-                matches: /^(https?:\/\/)?(www\.)?(youtube\.com|youtu\.be|vimeo\.com|bilibili\.com).*$/,
-                matchesMessage: "请输入有效的视频平台链接（支持YouTube、Vimeo、Bilibili等）"
             },
-            description: "支持YouTube、Vimeo、Bilibili等视频平台的链接"
+            storage: {
+                storagePath: "gallery/videos",
+                acceptedFiles: ["video/*"],
+                metadata: {
+                    cacheControl: "public,max-age=86400"
+                },
+                storeUrl: true
+            },
+            description: "支持上传 MP4、WebM 等格式的视频文件"
         },
         order: {
             name: "排序",
