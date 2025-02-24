@@ -28,13 +28,7 @@ import {
     useInitialiseFirebase,
 } from "@firecms/firebase";
 import { CenteredView } from "@firecms/ui";
-import { demoCollection } from "./collections/demo";
-import { productsCollection } from "./collections/products";
-import { usersCollection } from "./collections/users";
-import { classesCollection } from "./collections/classes";
 import { articlesCollection } from "./collections/articles";
-import { attendanceCollection } from "./collections/attendance";
-import { coursesCollection } from "./collections/courses";
 import { bannerCollection } from "./collections/banner";
 import { galleryCollection } from "./collections/gallery";
 
@@ -44,9 +38,9 @@ function App() {
 
     // Use your own authentication logic here
     const myAuthenticator: Authenticator<FirebaseUserWrapper> = useCallback(async ({
-                                                                                       user,
-                                                                                       authController
-                                                                                   }) => {
+        user,
+        authController
+    }) => {
 
         if (user?.email?.includes("flanders")) {
             // You can throw an error to prevent access
@@ -119,7 +113,7 @@ function App() {
 
     if (firebaseConfigLoading || !firebaseApp) {
         return <>
-            <CircularProgressCenter/>
+            <CircularProgressCenter />
         </>;
     }
 
@@ -138,30 +132,30 @@ function App() {
                     storageSource={storageSource}
                 >
                     {({
-                          context,
-                          loading
-                      }) => {
+                        context,
+                        loading
+                    }) => {
 
                         if (loading || authLoading) {
-                            return <CircularProgressCenter size={"large"}/>;
+                            return <CircularProgressCenter size={"large"} />;
                         }
 
                         if (!canAccessMainView) {
                             return <FirebaseLoginView authController={authController}
-                                                      firebaseApp={firebaseApp}
-                                                      signInOptions={signInOptions}
-                                                      notAllowedError={notAllowedError}/>;
+                                firebaseApp={firebaseApp}
+                                signInOptions={signInOptions}
+                                notAllowedError={notAllowedError} />;
                         }
 
                         return <Scaffold
+                            logo={"/demo_logo.png"}
                             autoOpenDrawer={false}>
-                            <AppBar 
-                                title={"My demo app"}
-                                logo={generateFavicon()}
+                            <AppBar
+                                title={"ME-CAMP-EDU"}
                             />
-                            <Drawer/>
-                            <NavigationRoutes/>
-                            <SideDialogs/>
+                            <Drawer />
+                            <NavigationRoutes />
+                            <SideDialogs />
                         </Scaffold>;
                     }}
                 </FireCMS>
