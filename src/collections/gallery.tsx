@@ -18,12 +18,10 @@ export const galleryCollection = buildCollection<GalleryItem>({
     properties: {
         title: {
             name: "标题",
-            validation: { required: true },
             dataType: "string"
         },
         titleEn: {
             name: "英文标题",
-            validation: { required: true },
             dataType: "string"
         },
         type: {
