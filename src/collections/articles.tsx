@@ -19,6 +19,10 @@ type Article = {
     showOnHome: boolean;  // 新增首页展示控制字段
     registrationLink: string;  // 新增报名链接字段
     locations: Location[];  // 新增 locations 字段类型
+    //是否满员
+    isFull: boolean;
+    //是否包机票
+    isAirline: boolean;
 }
 
 export const articlesCollection = buildCollection<Article>({
@@ -76,6 +80,16 @@ export const articlesCollection = buildCollection<Article>({
                 notice: "通知公告"
             }
         },
+        isFull: {
+            name: "是否满员",
+            dataType: "boolean",
+            defaultValue: false
+        },
+        isAirline: {
+            name: "是否包机票",
+            dataType: "boolean",
+            defaultValue: false
+        },    
         publishDate: {
             name: "发布日期",
             dataType: "date",
